@@ -1,6 +1,6 @@
 <template>
 
-  <div class="bubble" :style="{top:top+'px',left:left+'px'}">
+  <div class="bubble red-bubble" :style="{top:top+'px',left:left+'px'}">
     <img src="../assets/img/red.png" 
          :style="{width:size+'px',height:size+'px'}" 
          @mousedown.prevent="onMouseDown" 
@@ -64,3 +64,15 @@ export default Vue.extend({
 
 });
 </script>
+<style scoped>
+  .bubble{
+    position: absolute;
+  }
+  .red-bubble:hover{
+    cursor: move;
+    cursor:-webkit-grab;
+  }
+  .red-bubble:active{
+    cursor:-webkit-grabbing;
+  }
+</style>
