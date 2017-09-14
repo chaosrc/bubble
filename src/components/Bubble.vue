@@ -7,28 +7,28 @@
 <script>
 export default {
   name:'bubble',
-  props:['width','height'],
+  props:["property",'width','height'],
   data(){
     return{
-      srcPath:'../assets/img/blue.png',
-      top: 0,
-      left: 0,
-      size: 10
+      
     }
   },
-  created(){
-    this.top = this.randomInt(0,this.height);
-    this.left = this.randomInt(0,this.width);
-    this.size =this.randomInt(20,50);
+  computed:{
+    top:{
+      get:function(){
+        return this.property.top;
+      }
+    },
+    left(){
+      return this.property.left;
+    },
+    size(){
+      return this.property.size;
+    }
   },
   methods:{
-    randomInt(start,end){
-      let r = Math.random()
-      return parseInt(start+r * (end - start))
-    },
-    move(top,left){
-      this.top = top;
-      this.left = left;
+    move(x,y){
+      this.$emit('moving',{id:this.property.id,mx:x,my:y});
     }
 
   }

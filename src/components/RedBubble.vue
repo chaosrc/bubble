@@ -16,17 +16,14 @@ import Bubble from './Bubble'
 import Vue from 'vue'
 export default Vue.extend({
   mixins:[Bubble],
-  created(){
-    this.size = 50;
-    this.top = (this.height-this.size)/2;
-    this.left = (this.width-this.size)/2;
-  },
   data(){
     return {
-      size: 50,
       mouseDown:false,
       mouseCoord:{}
     }
+  },
+  mounted(){
+    console.log(this.top,this.left)
   },
   methods:{
     onMouseDown(e){
@@ -51,7 +48,7 @@ export default Vue.extend({
         return;
       }
 
-      this.move(targetY,targetX);
+      this.move(moveX,moveY);
 
       this.mouseCoord.x = e.clientX;
       this.mouseCoord.y = e.clientY;
