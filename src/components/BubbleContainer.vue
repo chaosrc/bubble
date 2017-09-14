@@ -48,7 +48,7 @@ export default {
         top: this.randomInt(0,this.height),
         left: this.randomInt(0,this.width),
         size:this.randomInt(20,50),
-        vector:''
+        vector: new Vector()
       }
     },
     randomInt(start,end){
@@ -128,7 +128,39 @@ export default {
       if(options.id === 'red'){
         let redius = this.redBubble.size/bubble.size;
         bubble.vector = new Vector(options.mx*redius*5, options.my*redius*5);
+      }else{
+        let bubble2 = this.blueBubbles[options.id];
+        bubble2.vector.x = options.mx;
+        bubble2.vector.y = options.my;
+        this.calcu2DCollision(bubble,bubble2);
       }
+    },
+    calcu2DCollision(b1,b2){
+      //两球球心连线的单位向量，用来计算速率分量
+      let cm = new Vector(b2.left-b1.left,b2.top-b1.top).normalize();
+      //点乘计算球心连线分量大小
+      let b1y = b1.vector.dot(cm)
+      let b2y = b2.vector.dot(cm);
+      b1y = cm.multiply(b1y);
+      b2y = cm.multiply(b2y);
+      
+      //计算球心连线垂直方向分量大小
+      let b1x = b1.vector.subtract(b1y);
+      let b2x = b2.vector.subtract(b2y);
+
+      //如果质量(size)一样，交换vector
+      //TODO: 根据size的大小计算碰撞后的分量
+      let temp = b1y;
+      b1y = b2y;
+      b2y = temp;
+
+      temp = b1x;
+      b1x = b2x;
+      b2x = temp;
+
+      //update bubbles vector
+      b1.vector = b1y.add(b1x);
+      b2.vector = b2y.add(b2x);
     }
   },
   components:{
