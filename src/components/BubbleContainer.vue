@@ -132,7 +132,7 @@ export default {
         if(bubble.vector.length < 0.2){ 
           bubble.vector = new Vector(options.mx*redius*5, options.my*redius*5);
         }else{
-          bubble.vector = new Vector(-bubble.vector.x,-bubble.vector.y);
+          // bubble.vector = new Vector(-bubble.vector.x,-bubble.vector.y);
         }
       }else{
         let bubble2 = this.blueBubbles[options.id];
