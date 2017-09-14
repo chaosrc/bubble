@@ -22,7 +22,7 @@ import Vector from '../util/Vector'
 export default {
   name:'bubble-container',
   created(){
-    for(let i=0;i<30;i++){
+    for(let i=0;i<20;i++){
       let blue = this.getRandomBubble();
       blue.id = i;
       this.blueBubbles.push(blue);
@@ -48,7 +48,7 @@ export default {
         top: this.randomInt(0,this.height),
         left: this.randomInt(0,this.width),
         size:this.randomInt(20,50),
-        vector:''
+        vector: new Vector()
       }
     },
     randomInt(start,end){
@@ -72,33 +72,35 @@ export default {
         target = this.blueBubbles[options.id]
       }
       this.updatePosition(target,options.mx,options.my);
+
+       if(target.vector){
+        //更新target的移动速率，并使其递减
+        target.vector = target.vector.multiply(0.9);
+      }
+      if(col&&col.vector) col.vector = col.vector.multiply(0.9);
       
     },
     updatePosition(target,mx,my){
       let top = target.top + my;
       let left = target.left + mx;
+      let size = target.size-5;
       //如果目标位置超出边界，移动到对面
-      if(top<0&&-top>target.size){
+      if(top<0&&-top>size){
         top = this.height;
       }
-      if(left<0&&-left>target.size){
+      if(left<0&&-left>size){
         left = this.width;
       }
       if(top>this.height){
-        top = -target.size
+        top = -size
       }
       if(left>this.width){
-        left = -target.size
+        left = -size
       }
       
       target.top = top;
       target.left = left;
 
-      
-      if(target.vector){
-        //更新target的移动速率，并使其递减
-        target.vector = new Vector(target.vector.x*0.9,target.vector.y*0.9);
-      }
     },
     hasCollision(options){
       let moveBubble = options.id === 'red' ? this.redBubble : this.blueBubbles[options.id];
@@ -127,8 +129,44 @@ export default {
     resovleCollision(options,bubble){
       if(options.id === 'red'){
         let redius = this.redBubble.size/bubble.size;
-        bubble.vector = new Vector(options.mx*redius*5, options.my*redius*5);
+        if(bubble.vector.length < 0.2){ 
+          bubble.vector = new Vector(options.mx*redius*5, options.my*redius*5);
+        }else{
+          bubble.vector = new Vector(-bubble.vector.x,-bubble.vector.y);
+        }
+      }else{
+        let bubble2 = this.blueBubbles[options.id];
+        bubble2.vector.x = options.mx;
+        bubble2.vector.y = options.my;
+        this.calcu2DCollision(bubble,bubble2);
       }
+    },
+    calcu2DCollision(b1,b2){
+      //两球球心连线的单位向量，用来计算速率分量
+      let cm = new Vector(b2.left-b1.left,b2.top-b1.top).normalize();
+      //点乘计算球心连线分量大小
+      let b1y = b1.vector.dot(cm)
+      let b2y = b2.vector.dot(cm);
+      b1y = cm.multiply(b1y);
+      b2y = cm.multiply(b2y);
+      
+      //计算球心连线垂直方向分量大小
+      let b1x = b1.vector.subtract(b1y);
+      let b2x = b2.vector.subtract(b2y);
+
+      //如果质量(size)一样，交换vector
+      //TODO: 根据size的大小计算碰撞后的分量
+      let temp = b1y;
+      b1y = b2y;
+      b2y = temp;
+
+      temp = b1x;
+      b1x = b2x;
+      b2x = temp;
+
+      //update bubbles vector
+      b1.vector = b1y.add(b1x);
+      b2.vector = b2y.add(b2x);
     }
   },
   components:{

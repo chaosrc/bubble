@@ -11,9 +11,9 @@ export default Vue.extend({
   },
   watch:{
     vector(pre){
-      if(this.vector&&this.vector.length>0.1) {
+      if(this.vector&&this.vector.length>0.2) {
         requestAnimationFrame(()=> this.move(this.vector.x,this.vector.y));
-        console.log(this.property.id,this.vector.x,this.vector.y)
+        // console.log(this.property.id,this.vector.x,this.vector.y)
         
       };
     }
