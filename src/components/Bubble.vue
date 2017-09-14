@@ -28,7 +28,13 @@ export default {
   },
   methods:{
     move(x,y){
-      this.$emit('moving',{id:this.property.id,mx:x,my:y});
+      this.$emit('moving',
+      {
+        id:this.property.id,
+        mx:x,
+        my:y,
+        // vector:this.vector
+      });
     }
 
   }
